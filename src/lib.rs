@@ -19,7 +19,7 @@ pub mod prelude {
     };
 
     pub use crate::{
-        action, create_global_store, multi_store, reactive, reaxive_store, store_with_actions,
+        action, create_global_store, multi_store, reaxive, reaxive_store, store_with_actions,
     };
 }
 
