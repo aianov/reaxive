@@ -1,0 +1,18 @@
+[package]
+name = "reaxive"
+version = "1.0.0"
+edition = "2024"
+authors = ["Dulat Ayanov <ayanovdulat@gmail.com>"]
+description = "A reactive state management library for Dioxus inspired by MobX"
+license = "MIT"
+repository = "https://github.com/aianov/reaxive"
+documentation = "https://github.com/aianov/reaxive"
+readme = "README.md"
+keywords = ["dioxus", "state", "reactive", "mobx", "store"]
+categories = ["web-programming", "gui"]
+
+[dependencies]
+dioxus = { version = "0.6", features = ["web", "desktop"] }
+
+[dev-dependencies]
+dioxus-desktop = "0.6" 
