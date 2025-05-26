@@ -17,8 +17,7 @@ Add ReaXive to your Cargo.toml:
 
 ```toml
 [dependencies]
-reaxive = "1.0.2"
-dioxus = "0.6"
+reaxive = "1.0.3"
 ```
 
 ## Usage
@@ -54,11 +53,11 @@ reaxive_store!(CounterStore {
 // Implement methods for your store
 impl CounterStore {
     pub fn increment(&self) {
-        self.count.update(|count| *count += 1);
+        self.count.set(|count| *count += 1); // or .inc()
     }
 
     pub fn decrement(&self) {
-        self.count.update(|count| *count -= 1);
+        self.count.set(|count| *count -= 1); // or .dec()
     }
 
     pub fn get_count(&self) -> i32 {
@@ -66,11 +65,11 @@ impl CounterStore {
     }
 
     pub fn set_name(&self, name: String) {
-        self.user.update(|user| user.name = name);
+        self.user.set(|user| user.name = name);
     }
 
     pub fn set_last_name(&self, last_name: String) {
-        self.user.update(|user| user.last_name = last_name);
+        self.user.set(|user| user.last_name = last_name);
     }
 
     pub fn get_user(&self) -> User {
@@ -86,11 +85,6 @@ impl CounterStore {
         self.user.set(User::default());
     }
 }
-
-// Create a hook to use the store
-pub fn use_counter() -> CounterStore {
-    use_store::<CounterStore>()
-}
 ```
 
 ### Reactive Components
@@ -103,7 +97,7 @@ use dioxus::prelude::*;
 reaxive! {
     #[component]
     pub fn CounterPage() -> Element {
-        let store = use_counter();
+        let store = CounterStore::new();
 
         rsx! {
             div { class: "counter-page",
@@ -169,11 +163,11 @@ reaxive! {
 
 - **Zero Boilerplate**: Use `reaxive_store!` and `reaxive!` macros for minimal setup
 - **Type Safety**: Full Rust type safety with automatic inference
-- **Global State**: Stores are automatically managed globally with `use_store`
+- **Global State**: Stores are automatically managed globally with macro `reaxive!`
 - **Reactive Updates**: Components automatically re-render when observable values change
 - **Thread Safe**: All stores are thread-safe by default
 - **Multiple Data Types**: Store multiple different types in a single store
-- **Flexible API**: Direct field access with `.get()`, `.set()`, and `.update()` methods
+- **Flexible API**: Direct field access with `.get()`, `.set()`, and other methods
 
 ## License
 

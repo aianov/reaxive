@@ -1,6 +1,7 @@
 use dioxus::prelude::{Readable, Writable};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::ops::{AddAssign, SubAssign};
 use std::rc::{Rc, Weak};
 use std::sync::{Arc, Mutex};
 
@@ -35,8 +36,8 @@ impl Drop for ObserverContext {
 
 pub trait Observable<T: Clone + 'static> {
     fn get(&self) -> T;
-    fn set(&self, value: T);
-    fn update<F>(&self, updater: F)
+    fn assign(&self, value: T);
+    fn set<F>(&self, updater: F)
     where
         F: FnOnce(&mut T);
     fn subscribe<F: Fn(&T) + Send + Sync + 'static>(&self, callback: F) -> usize;
@@ -66,14 +67,14 @@ impl<T: Clone + 'static> ObservableValue<T> {
     }
 
     pub fn set_value(&self, value: T) {
-        self.set(value);
+        self.assign(value);
     }
 
     pub fn update_value<F>(&self, updater: F)
     where
         F: FnOnce(&mut T),
     {
-        self.update(updater);
+        self.set(updater);
     }
 
     pub fn on_change<F: Fn(&T) + Send + Sync + 'static>(&self, callback: F) -> usize {
@@ -100,6 +101,65 @@ impl<T: Clone + 'static> ObservableValue<T> {
         self.track_access();
         let value = self.value.lock().unwrap();
         predicate(&*value)
+    }
+
+    // Красивые методы для частых операций
+
+    /// Increment numeric values: count.inc() instead of count.set(|c| *c += 1)
+    pub fn inc(&self)
+    where
+        T: AddAssign<T> + From<i32>,
+    {
+        self.set(|val| *val += T::from(1));
+    }
+
+    /// Decrement numeric values: count.dec() instead of count.set(|c| *c -= 1)
+    pub fn dec(&self)
+    where
+        T: SubAssign<T> + From<i32>,
+    {
+        self.set(|val| *val -= T::from(1));
+    }
+
+    /// Add specific amount: count.add(5) instead of count.set(|c| *c += 5)
+    pub fn add(&self, amount: T)
+    where
+        T: AddAssign<T>,
+    {
+        self.set(|val| *val += amount);
+    }
+
+    /// Subtract specific amount: count.sub(3) instead of count.set(|c| *c -= 3)
+    pub fn sub(&self, amount: T)
+    where
+        T: SubAssign<T>,
+    {
+        self.set(|val| *val -= amount);
+    }
+
+    /// Toggle boolean values: flag.toggle() instead of flag.set(|f| *f = !*f)
+    pub fn toggle(&self)
+    where
+        T: std::ops::Not<Output = T> + Copy,
+    {
+        self.set(|val| *val = !*val);
+    }
+
+    /// Push to Vec: items.push(item) instead of items.set(|v| v.push(item))
+    pub fn push<U>(&self, item: U)
+    where
+        T: AsMut<Vec<U>>,
+        U: Clone,
+    {
+        self.set(|vec| vec.as_mut().push(item));
+    }
+
+    /// Clear collections: items.clear() instead of items.set(|v| v.clear())
+    pub fn clear<U>(&self)
+    where
+        T: AsMut<Vec<U>>,
+    {
+        self.set(|vec| vec.as_mut().clear());
     }
 
     fn notify_subscribers(&self) {
@@ -147,12 +207,12 @@ impl<T: Clone + 'static> Observable<T> for ObservableValue<T> {
         self.value.lock().unwrap().clone()
     }
 
-    fn set(&self, value: T) {
+    fn assign(&self, value: T) {
         *self.value.lock().unwrap() = value;
         self.notify_subscribers();
     }
 
-    fn update<F>(&self, updater: F)
+    fn set<F>(&self, updater: F)
     where
         F: FnOnce(&mut T),
     {

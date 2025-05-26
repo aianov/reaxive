@@ -156,3 +156,53 @@ macro_rules! store_with_actions {
         }
     };
 }
+
+#[macro_export]
+macro_rules! reaxive_store {
+    (
+        $name:ident {
+            $(
+                $field:ident: $type:ty = $default:expr
+            ),* $(,)?
+        }
+    ) => {
+        #[derive(Clone)]
+        pub struct $name {
+            $(
+                pub $field: $crate::ObservableValue<$type>,
+            )*
+        }
+
+        impl $name {
+            /// Creates a new instance that automatically connects to the global store
+            /// Works like ModX - just call new() and get the global state!
+            pub fn new() -> Self {
+                $crate::use_store::<Self>()
+            }
+
+            /// Internal method for creating actual instances (used by the store system)
+            fn create_instance() -> Self {
+                Self {
+                    $(
+                        $field: $crate::observable($default),
+                    )*
+                }
+            }
+        }
+
+        impl Default for $name {
+            fn default() -> Self {
+                Self::create_instance()
+            }
+        }
+
+        unsafe impl Send for $name {}
+        unsafe impl Sync for $name {}
+
+        impl $crate::Store for $name {
+            fn id(&self) -> std::any::TypeId {
+                std::any::TypeId::of::<$name>()
+            }
+        }
+    };
+}

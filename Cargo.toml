@@ -1,6 +1,6 @@
 [package]
 name = "reaxive"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 authors = ["Dulat Ayanov <ayanovdulat@gmail.com>"]
 description = "A reactive state management library for Dioxus inspired by MobX"
