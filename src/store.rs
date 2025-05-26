@@ -1,4 +1,4 @@
-use crate::lib::ObservableValue;
+use crate::ObservableValue;
 use std::any::{Any, TypeId};
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex};
@@ -151,13 +151,13 @@ macro_rules! simple_store {
     ($name:ident, $type:ty, $default:expr) => {
         #[derive(Clone)]
         pub struct $name {
-            pub value: $crate::lib::ObservableValue<$type>,
+            pub value: $crate::ObservableValue<$type>,
         }
 
         impl $name {
             pub fn new() -> Self {
                 Self {
-                    value: $crate::lib::observable($default),
+                    value: $crate::observable($default),
                 }
             }
 
@@ -186,7 +186,7 @@ macro_rules! simple_store {
         unsafe impl Send for $name {}
         unsafe impl Sync for $name {}
 
-        impl $crate::lib::Store for $name {
+        impl $crate::Store for $name {
             fn id(&self) -> std::any::TypeId {
                 std::any::TypeId::of::<$name>()
             }
@@ -195,7 +195,7 @@ macro_rules! simple_store {
 }
 
 #[macro_export]
-macro_rules! reaxion_store {
+macro_rules! multi_store {
     (
         $name:ident {
             $(
@@ -206,7 +206,7 @@ macro_rules! reaxion_store {
         #[derive(Clone)]
         pub struct $name {
             $(
-                pub $field: $crate::lib::ObservableValue<$type>,
+                pub $field: $crate::ObservableValue<$type>,
             )*
         }
 
@@ -214,7 +214,7 @@ macro_rules! reaxion_store {
             pub fn new() -> Self {
                 Self {
                     $(
-                        $field: $crate::lib::observable($default),
+                        $field: $crate::observable($default),
                     )*
                 }
             }
@@ -229,7 +229,7 @@ macro_rules! reaxion_store {
         unsafe impl Send for $name {}
         unsafe impl Sync for $name {}
 
-        impl $crate::lib::Store for $name {
+        impl $crate::Store for $name {
             fn id(&self) -> std::any::TypeId {
                 std::any::TypeId::of::<$name>()
             }

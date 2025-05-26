@@ -17,7 +17,8 @@ Add ReaXive to your Cargo.toml:
 
 ```toml
 [dependencies]
-reaxive = "0.1.0"
+reaxive = "1.0.0"
+dioxus = "0.6"
 ```
 
 ## Usage

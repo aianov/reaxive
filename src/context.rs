@@ -1,4 +1,4 @@
-use crate::lib::Store;
+use crate::Store;
 use std::any::TypeId;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};

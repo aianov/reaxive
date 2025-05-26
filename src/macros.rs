@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! multi_store {
+macro_rules! mobx_store {
     (
         $store_name:ident {
             $(
@@ -18,7 +18,7 @@ macro_rules! multi_store {
         #[derive(Clone)]
         pub struct $store_name {
             $(
-                pub $field_name: $crate::lib::ObservableValue<$field_type>,
+                pub $field_name: $crate::ObservableValue<$field_type>,
             )*
         }
 
@@ -26,7 +26,7 @@ macro_rules! multi_store {
             pub fn new() -> Self {
                 Self {
                     $(
-                        $field_name: $crate::lib::observable($initial_value),
+                        $field_name: $crate::observable($initial_value),
                     )*
                 }
             }
@@ -38,7 +38,7 @@ macro_rules! multi_store {
             )*
         }
 
-        impl $crate::lib::Store for $store_name {
+        impl $crate::Store for $store_name {
             fn id(&self) -> std::any::TypeId {
                 std::any::TypeId::of::<$store_name>()
             }
@@ -70,7 +70,7 @@ macro_rules! action {
 }
 
 #[macro_export]
-macro_rules! reaxive {
+macro_rules! reactive {
     (
         #[component]
         $(#[$attr:meta])*
@@ -81,20 +81,20 @@ macro_rules! reaxive {
         #[component]
         $(#[$attr])*
         $vis fn $name($($param: $param_type),*) -> Element {
-            let reaxive_update = dioxus::prelude::use_signal(|| 0u32);
+            let reactive_update = dioxus::prelude::use_signal(|| 0u32);
 
             let _observer_context = dioxus::prelude::use_hook(|| {
                 let update_ui = {
-                    let mut reaxive_update = reaxive_update.clone();
+                    let mut reactive_update = reactive_update.clone();
                     move || {
-                        reaxive_update.set(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u32);
+                        reactive_update.set(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u32);
                     }
                 };
 
-                $crate::lib::ObserverContext::new(update_ui)
+                $crate::ObserverContext::new(update_ui)
             });
 
-            let _ = reaxive_update.read();
+            let _ = reactive_update.read();
 
             $($body)*
         }
@@ -110,7 +110,7 @@ macro_rules! store {
             ),* $(,)?
         }
     ) => {
-        $crate::multi_store! {
+        $crate::mobx_store! {
             $store_name {
                 $(
                     $field_name: $field_type = $initial_value
@@ -139,7 +139,7 @@ macro_rules! store_with_actions {
             )*
         }
     ) => {
-        $crate::multi_store! {
+        $crate::mobx_store! {
             $store_name {
                 $(
                     $field_name: $field_type = $initial_value
