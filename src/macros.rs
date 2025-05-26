@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! store {
+macro_rules! multi_store {
     (
         $store_name:ident {
             $(
@@ -110,7 +110,7 @@ macro_rules! store {
             ),* $(,)?
         }
     ) => {
-        $crate::store! {
+        $crate::multi_store! {
             $store_name {
                 $(
                     $field_name: $field_type = $initial_value
@@ -139,7 +139,7 @@ macro_rules! store_with_actions {
             )*
         }
     ) => {
-        $crate::store! {
+        $crate::multi_store! {
             $store_name {
                 $(
                     $field_name: $field_type = $initial_value
