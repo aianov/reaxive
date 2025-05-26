@@ -195,7 +195,7 @@ macro_rules! simple_store {
 }
 
 #[macro_export]
-macro_rules! multi_store {
+macro_rules! reaxive {
     (
         $name:ident {
             $(

@@ -19,8 +19,7 @@ pub mod prelude {
     };
 
     pub use crate::{
-        action, create_global_store, mobx_store, multi_store, reactive, simple_store,
-        store_with_actions,
+        action, create_global_store, multi_store, reactive, simple_store, store, store_with_actions,
     };
 }
 
