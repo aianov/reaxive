@@ -9,7 +9,7 @@
 - Simple API similar to MobX
 - Seamless integration with Dioxus
 - Multi-field stores with `reaxive_store!` macro
-- Reactive components with `reactive!` macro
+- Reactive components with `reaxive!` macro
 
 ## Installation
 
@@ -99,8 +99,8 @@ pub fn use_counter() -> CounterStore {
 use reaxive::prelude::*;
 use dioxus::prelude::*;
 
-// Use the reactive! macro to make components automatically update when store values change
-reactive! {
+// Use the reaxive! macro to make components automatically update when store values change
+reaxive! {
     #[component]
     pub fn CounterPage() -> Element {
         let store = use_counter();
@@ -165,42 +165,9 @@ reactive! {
 }
 ```
 
-### Simple Single-Value Store
-
-For simpler use cases, you can use the `simple_store!` macro:
-
-```rust
-use reaxive::prelude::*;
-
-// Create a simple store with a single observable value
-simple_store!(CountStore, i32, 0);
-
-// Use it in your app
-pub fn use_count() -> CountStore {
-    use_store::<CountStore>()
-}
-
-reactive! {
-    #[component]
-    fn SimpleCounter() -> Element {
-        let count_store = use_count();
-
-        rsx! {
-            div {
-                p { "Count: {count_store.get()}" }
-                button {
-                    onclick: move |_| count_store.update(|c| *c += 1),
-                    "Increment"
-                }
-            }
-        }
-    }
-}
-```
-
 ## Key Features
 
-- **Zero Boilerplate**: Use `reaxive_store!` and `reactive!` macros for minimal setup
+- **Zero Boilerplate**: Use `reaxive_store!` and `reaxive!` macros for minimal setup
 - **Type Safety**: Full Rust type safety with automatic inference
 - **Global State**: Stores are automatically managed globally with `use_store`
 - **Reactive Updates**: Components automatically re-render when observable values change

@@ -70,7 +70,7 @@ macro_rules! action {
 }
 
 #[macro_export]
-macro_rules! reactive {
+macro_rules! reaxive {
     (
         #[component]
         $(#[$attr:meta])*
@@ -81,20 +81,20 @@ macro_rules! reactive {
         #[component]
         $(#[$attr])*
         $vis fn $name($($param: $param_type),*) -> Element {
-            let reactive_update = dioxus::prelude::use_signal(|| 0u32);
+            let reaxive_update = dioxus::prelude::use_signal(|| 0u32);
 
             let _observer_context = dioxus::prelude::use_hook(|| {
                 let update_ui = {
-                    let mut reactive_update = reactive_update.clone();
+                    let mut reaxive_update = reaxive_update.clone();
                     move || {
-                        reactive_update.set(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u32);
+                        reaxive_update.set(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos() as u32);
                     }
                 };
 
                 $crate::ObserverContext::new(update_ui)
             });
 
-            let _ = reactive_update.read();
+            let _ = reaxive_update.read();
 
             $($body)*
         }
