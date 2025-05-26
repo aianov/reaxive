@@ -17,7 +17,7 @@ Add ReaXive to your Cargo.toml:
 
 ```toml
 [dependencies]
-reaxion = "0.1.0"
+reaxive = "0.1.0"
 ```
 
 ## Usage
@@ -169,7 +169,7 @@ reactive! {
 For simpler use cases, you can use the `simple_store!` macro:
 
 ```rust
-use reaxion::prelude::*;
+use reaxive::prelude::*;
 
 // Create a simple store with a single observable value
 simple_store!(CountStore, i32, 0);
