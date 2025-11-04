@@ -53,11 +53,11 @@ reaxive_store!(CounterStore {
 // Implement methods for your store
 impl CounterStore {
     pub fn increment(&self) {
-        self.count.set(|count| *count += 1); // or .inc()
+        self.count.set(|count| *count += 1);
     }
 
     pub fn decrement(&self) {
-        self.count.set(|count| *count -= 1); // or .dec()
+        self.count.set(|count| *count -= 1);
     }
 
     pub fn get_count(&self) -> i32 {
